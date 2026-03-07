@@ -1,5 +1,6 @@
 #include "HalPowerManager.h"
 
+#include <PowerManagementUnit.h>
 #include <Logging.h>
 #include <WiFi.h>
 #include <esp_sleep.h>
@@ -11,7 +12,13 @@
 HalPowerManager powerManager;  // Singleton instance
 
 void HalPowerManager::begin() {
-  pinMode(BAT_GPIO0, INPUT);
+  Wire.begin(I2C_SDA, I2C_SCL);
+  if (PowerManagementUnit::getInstance().begin(Wire, I2C_SDA, I2C_SCL)) {
+      LOG_INF("PWR", "Power Management Unit initialized");
+  } else {
+      LOG_ERR("PWR", "Power Management Unit initialization failed");
+  }
+  
   normalFreq = getCpuFrequencyMhz();
   modeMutex = xSemaphoreCreateMutex();
   assert(modeMutex != nullptr);
@@ -58,14 +65,18 @@ void HalPowerManager::startDeepSleep(HalGPIO& gpio) const {
     delay(50);
     gpio.update();
   }
+  
+  // Power off display logic and other components can be handled here or inside EInkDisplay
+  
   // Arm the wakeup trigger *after* the button is released
-  esp_deep_sleep_enable_gpio_wakeup(1ULL << InputManager::POWER_BUTTON_PIN, ESP_GPIO_WAKEUP_GPIO_LOW);
-  // Enter Deep Sleep
+  // Enable wakeup from deep sleep using the boot button
+  esp_sleep_enable_ext1_wakeup(1ULL << InputManager::BUTTON_BOOT_PIN, ESP_EXT1_WAKEUP_ANY_LOW);
+  
   esp_deep_sleep_start();
 }
 
 uint16_t HalPowerManager::getBatteryPercentage() const {
-  static const BatteryMonitor battery = BatteryMonitor(BAT_GPIO0);
+  static const BatteryMonitor battery = BatteryMonitor();
   return battery.readPercentage();
 }
 

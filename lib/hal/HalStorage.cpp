@@ -4,12 +4,17 @@
 #include <FS.h>  // need to be included before SdFat.h for compatibility with FS.h's File class
 #include <Logging.h>
 #include <SDCardManager.h>
+#include "HalGPIO.h"
 
 #include <cassert>
+
+#include <SPI.h>
 
 #define SDCard SDCardManager::getInstance()
 
 HalStorage HalStorage::instance;
+
+static SPIClass spiSD(FSPI);
 
 HalStorage::HalStorage() {
   storageMutex = xSemaphoreCreateMutex();
@@ -18,7 +23,10 @@ HalStorage::HalStorage() {
 
 // begin() and ready() are only called from setup, no need to acquire mutex for them
 
-bool HalStorage::begin() { return SDCard.begin(); }
+bool HalStorage::begin() { 
+  spiSD.begin(SD_SCLK, SD_MISO, SD_MOSI, SD_CS);
+  return SDCard.begin(SD_CS, spiSD); 
+}
 
 bool HalStorage::ready() const { return SDCard.ready(); }
 

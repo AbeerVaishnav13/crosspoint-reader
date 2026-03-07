@@ -1,0 +1,17 @@
+{
+  "name": "PowerManagementUnit",
+  "version": "1.0.0",
+  "description": "Hardware abstraction for the Waveshare ESP32-S3 e-Paper 3.97 AXP2101 PMU",
+  "authors": [
+    {
+      "name": "Antigravity",
+      "email": "auto-agent@local",
+      "url": "https://local"
+    }
+  ],
+  "dependencies": {
+    "lewisxhe/XPowersLib" : "^0.2.6"
+  },
+  "platforms": "espressif32",
+  "frameworks": ["arduino", "espidf"]
+}

@@ -5,16 +5,22 @@
 #include <InputManager.h>
 
 // Display SPI pins (custom pins for XteinkX4, not hardware SPI defaults)
-#define EPD_SCLK 8   // SPI Clock
-#define EPD_MOSI 10  // SPI MOSI (Master Out Slave In)
-#define EPD_CS 21    // Chip Select
-#define EPD_DC 4     // Data/Command
-#define EPD_RST 5    // Reset
-#define EPD_BUSY 6   // Busy
+#define EPD_SCLK 11   // SPI Clock
+#define EPD_MOSI 12  // SPI MOSI (Master Out Slave In)
+#define EPD_CS 10    // Chip Select
+#define EPD_DC 9     // Data/Command
+#define EPD_RST 46    // Reset
+#define EPD_BUSY 3   // Busy
 
-#define SPI_MISO 7  // SPI MISO, shared between SD card and display (Master In Slave Out)
+// SD Card SPI pins
+#define SD_MISO 15
+#define SD_MOSI 17
+#define SD_SCLK 16
+#define SD_CS 18
 
-#define BAT_GPIO0 0  // Battery voltage
+// I2C pins for AXP2101 power management
+#define I2C_SDA 41
+#define I2C_SCL 42
 
 #define UART0_RXD 20  // Used for USB connection detection
 

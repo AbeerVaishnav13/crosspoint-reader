@@ -3,7 +3,10 @@
 
 void HalGPIO::begin() {
   inputMgr.begin();
-  SPI.begin(EPD_SCLK, SPI_MISO, EPD_MOSI, EPD_CS);
+  
+  // Display SPI Bus
+  SPI.begin(EPD_SCLK, -1, EPD_MOSI, EPD_CS);
+  
   pinMode(UART0_RXD, INPUT);
 }
 
